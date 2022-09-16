@@ -1,4 +1,4 @@
-# PhaserBeams (Next)
+# PhaserBeams (NextJS & Ably)
 
 This is an experiment in combining various technologies together in the effort to make a simple novel online multiplayer game. The various components of the project are as follows:
 
@@ -6,9 +6,9 @@ This is an experiment in combining various technologies together in the effort t
   - Multi-user frontend user interface
   - Modern React based framework
   - Easily hostable at [Vercel](https://vercel.com/)
-- [Supabase](https://supabase.com/) PaaS
-  - Authorisation (GitHub)
-  - Database
+- [Ably](https://ably.com/) realtime platform
+  - Authorisation
+  - Presence
   - Realtime event subscriptions
 - [WLED](https://kno.wled.ge/) LED Controller
   - Separate controller service
@@ -17,9 +17,7 @@ This is an experiment in combining various technologies together in the effort t
 
 ## Usage
 
-The experiment is currently deployed at: [https://phaserbeams-next.vercel.app/](https://phaserbeams-next.vercel.app/)
-
-Click _Login with GitHub_ and login using your GitHub identity.
+TODO
 
 ## Game Concepts
 
