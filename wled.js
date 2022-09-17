@@ -1,17 +1,17 @@
 require("dotenv").config();
-const supabase = require("@supabase/supabase-js");
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const Ably = require("ably");
 
-const client = supabase.createClient(supabaseUrl, supabaseAnonKey);
+const ablyClient = new Ably.Realtime(process.env.NEXT_PUBLIC_ABLY_API_KEY);
 
-const updates = client
-  .from("profiles")
-  .on("UPDATE", (payload) => {
-    const {
-      new: { id, coord_x },
-    } = payload;
-    console.log("Update", { user: id, x: coord_x });
-  })
-  .subscribe();
+const channel = ablyClient.channels.get("game");
+
+const states = {};
+
+channel.subscribe((message) => {
+  //console.log({ message });
+  if (message.name === "state") {
+    states[message.clientId] = message.data;
+  }
+  console.log({ states });
+});

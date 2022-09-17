@@ -13,6 +13,7 @@ configureAbly({
 });
 
 import styles from "../styles/Home.module.css";
+import { stringify } from "querystring";
 
 const KEY_LEFT = "o";
 const KEY_RIGHT = "p";
@@ -20,19 +21,29 @@ const KEY_RIGHT = "p";
 export default function GameScene() {
   const ably = assertConfiguration();
   const [presenceData] = usePresence("presence");
-  const [messages, updateMessages] = useState([]);
-  const [posX, setPosX] = useState<number>(0);
+  const [x, setX] = useState(0);
+  const [state, setState] = useState({});
 
-  const [channel] = useChannel("messages", (message) => {
-    updateMessages((prev) => [...prev, message]);
+  const [channel] = useChannel("game", (message) => {
+    // console.log("message", message);
+    if (message.name === "state") {
+      setState({
+        ...state,
+        [message.clientId]: { x: message.data.x },
+      });
+      if (ably.auth.clientId === message.clientId) {
+        setX(message.data.x);
+      }
+    }
   });
 
   useEffect(() => {
     window.addEventListener("keypress", handleKeypress);
     return () => window.removeEventListener("keypress", handleKeypress);
-  }, []);
+  }, [state]);
 
   const handleKeypress = (e: KeyboardEvent) => {
+    // console.log("key", e.key);
     if (e.key === KEY_LEFT) {
       moveX(-1);
     }
@@ -42,10 +53,10 @@ export default function GameScene() {
   };
 
   const moveX = (amount: number = 1) => {
-    let x = posX + amount;
-    if (x > 0 && x < 300) {
-      setPosX(x);
-      // upsertProfileDebounced({ coord_x: x });
+    let newX = x + amount;
+    if (newX > 0 && newX < 300) {
+      setX(newX);
+      channel.publish("state", { x: newX });
     }
   };
 
@@ -54,7 +65,6 @@ export default function GameScene() {
       <main className={styles.main}>
         <h1 className={styles.title}>Game</h1>
         <div className={styles.fieldrow}>
-          <p>X: {posX}</p>
           <button
             onClick={() => {
               moveX(-1);
@@ -71,8 +81,9 @@ export default function GameScene() {
           </button>
         </div>
         <div>
+          <pre>X: {x}</pre>
           <pre>PRESENCE: {JSON.stringify(presenceData, null, 2)}</pre>
-          <pre>MESSAGES: {JSON.stringify(messages, null, 2)}</pre>
+          <pre>COORDS: {JSON.stringify(state, null, 2)}</pre>
         </div>
         <Toolbar />
       </main>
