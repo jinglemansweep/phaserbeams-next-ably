@@ -9,6 +9,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import DebugView from "./DebugView";
 import ParticipantList from "./ParticipantList";
 import Toolbar from "./Toolbar";
+import Scene from "./three/Scene";
 
 configureAbly({
   authUrl: `${process.env.NEXT_PUBLIC_HOSTNAME}/api/createTokenRequest`,
@@ -88,6 +89,7 @@ export default function GameScene() {
           <div className="w3-container w3-cell">
             <h2>Dashboard</h2>
             <Toolbar moveCoords={moveCoords} />
+            <Scene />
             <DebugView coords={coords} />
           </div>
         </div>
