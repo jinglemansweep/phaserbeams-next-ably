@@ -38,10 +38,15 @@ export default function GameScene() {
 
   const moveCoords = useCallback(
     (x: number, y: number) => {
-      const current: Coordinate = coords[ably.auth.clientId];
+      let current: Coordinate;
+      if (coords[ably.auth.clientId]) {
+        current = coords[ably.auth.clientId];
+      } else {
+        current = { x: 0, y: 0 };
+      }
       let newX = current.x + x;
       let newY = current.y + y;
-      if (newX > 0 && newX < 300) {
+      if (newX >= 0 && newX < 300) {
         channel.publish("move", {
           x: newX,
           y: newY,
