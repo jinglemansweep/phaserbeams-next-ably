@@ -6,6 +6,7 @@ import {
   assertConfiguration,
 } from "@ably-labs/react-hooks";
 import React, { useCallback, useState, useEffect } from "react";
+import { Coordinate, UserCoordinates } from "./interfaces";
 import DebugView from "./DebugView";
 import ParticipantList from "./ParticipantList";
 import Toolbar from "./Toolbar";
@@ -18,12 +19,10 @@ configureAbly({
 const KEY_LEFT = "o";
 const KEY_RIGHT = "p";
 
-type Coordinates = Record<string, { x: number; y: number }>;
-
 export default function GameScene() {
   const ably = assertConfiguration();
   const [presenceData] = usePresence("presence");
-  const [coords, setCoords] = useState<Record<string, unknown>>({});
+  const [coords, setCoords] = useState<UserCoordinates>({});
 
   const [channel] = useChannel("game", (message) => {
     console.log("message", message);
@@ -39,7 +38,7 @@ export default function GameScene() {
 
   const moveCoords = useCallback(
     (x: number, y: number) => {
-      const current = coords[ably.auth.clientId] || { x: 0, y: 0 };
+      const current: Coordinate = coords[ably.auth.clientId];
       let newX = current.x + x;
       let newY = current.y + y;
       if (newX > 0 && newX < 300) {

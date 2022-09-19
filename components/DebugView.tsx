@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { UserCoordinates } from "./interfaces";
 
 type Props = {
-  coords: Record<string, unknown>;
+  coords: UserCoordinates;
 };
 
 export default function DebugView({ coords }: Props) {
